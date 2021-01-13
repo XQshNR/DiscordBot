@@ -28,42 +28,6 @@ client.on('message', message => {
     const args = message.content.slice(prefix.length).split(/ +/);
     const commandName = args.shift().toLowerCase();
 
-    switch(commandName) {
-        case 'reset':
-            if (args.length) return message.channel.send(`You provided arguments, ${message.author}!
-                \nThe proper usage would be: \`${prefix}reset\``);
-            value = 0;
-            return message.channel.send(value);
-
-        case 'add': 
-            if (!args.length) return message.channel.send(`You didn't provide any arguments, ${message.author}!
-                \nThe proper usage would be: \`${prefix}add <positive number>\``);
-            amount = args[0]
-            if (isNaN(amount)) return message.send('That doesn\'t seem to be a valid number.');
-            value += Number(args[0]);
-            return message.channel.send(value);
-
-        case 'subtract': 
-            if (!args.length) return message.channel.send(`You didn't provide any arguments, ${message.author}!
-                \nThe proper usage would be: \`${prefix}subtract <positive number>\``);
-            amount = args[0]
-            if (isNaN(amount)) return message.send('That doesn\'t seem to be a valid number.');
-            value -= Number(args[0]);
-            return message.channel.send(value);
-
-        case 'guess':
-            goal = Math.floor(Math.random() * 100) + 1;
-            guess = client.on('message');
-            while (guess !== goal) {
-                if (isNaN(guess)) message.channel.send('That doesn\'t seem to be a valid number.');
-                if (guess > goal) message.channel.send('Lower');
-                if (guess < goal) message.channel.send('Higher');
-                if (guess === 'exit') return message.channel.send('Stopped game.');
-                guess = client.on('message');
-            }
-            return message.channel.send('Congratulations! You have guessed my number!')
-    }
-
     const command = client.commands.get(commandName) 
         || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
@@ -92,7 +56,7 @@ client.on('message', message => {
     
     const now = Date.now();
     const timestamps = cooldowns.get(command.name);
-    const cooldownAmount = (command.cooldown || 3) * 1000;
+    const cooldownAmount = (command.cooldown || 1) * 1000;
     
     if (timestamps.has(message.author.id)) {
         const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
